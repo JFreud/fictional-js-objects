@@ -1,26 +1,27 @@
 var cb = document.getElementById("clear");
 var svg = document.getElementById("svgfield");
 
-var c, old_x, old_y, picked;
 
-var makeCircle = function(x, y) {
+var makeCircle = function(x, y, r) {
   var circle = {
     x: x,
     y: y,
+    r: r,
     color: "navy",
-    make: function() {
-      c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      c.setAttribute("cx", this.x);
-      c.setAttribute("cy", this.y);
-      c.setAttribute("r", 30);
-      c.setAttribute("stroke", "white");
-      c.setAttribute("fill", this.color);
-      c.addEventListener('click', this.changeColor);
-      svg.appendChild(c);
+    c: document.createElementNS("http://www.w3.org/2000/svg", "circle"),
+    display: function() {
+      this.c.setAttribute("cx", this.x);
+      this.c.setAttribute("cy", this.y);
+      this.c.setAttribute("r", this.r);
+      this.c.setAttribute("stroke", "white");
+      this.c.setAttribute("fill", this.color);
+      this.c.addEventListener('click', this.changeColor);
+      svg.appendChild(this.c);
     },
     changeColor: function(event){
       if (this.getAttribute("fill") == "green") {
-        svg.removeChild(this);
+        this.remove();
+        // console.log("hi");
         event.stopPropagation();
         makeRandom();
       }
@@ -28,6 +29,9 @@ var makeCircle = function(x, y) {
         this.setAttribute("fill", "green");
         event.stopPropagation();
       }
+    },
+    remove: function() {
+      svg.removeChild(this);
     }
   };
   return circle;
@@ -36,13 +40,13 @@ var makeCircle = function(x, y) {
 
 
 var makeRandom = function() {
-  c = makeCircle(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500));
-  c.make();
+  var c = makeCircle(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500), 30);
+  c.display();
 }
 
 var draw = function(event) {
-  c = makeCircle(event.offsetX, event.offsetY);
-  c.make();
+  c = makeCircle(event.offsetX, event.offsetY, 30);
+  c.display();
 }
 
 
